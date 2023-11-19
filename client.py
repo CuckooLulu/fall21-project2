@@ -13,6 +13,9 @@ parser.add_argument("port", help="Set Port Number", type=int)
 parser.add_argument("file", help="Set File Directory")
 args = parser.parse_args()
 
+# Initialize the sequence number
+sequence_number = 0
+
 def start():
     try:
         with confundo.Socket() as sock:
@@ -46,6 +49,12 @@ def start():
                             sent = sock.send(data[total_sent:])
                             total_sent += sent
                         data = f.read(412)  # Read the next segment
+
+                        # Update the sequence number and wrap around if needed
+                        global sequence_number
+                        sequence_number += len(data)
+                        if sequence_number >= 50000:
+                            sequence_number = sequence_number % 50000
 
                 # After transmitting the file, send a FIN packet to initiate connection termination
                 fin_packet = confundo.Packet()
