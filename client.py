@@ -26,6 +26,7 @@ def start():
             syn_packet.header.syn = 1
             syn_packet.header.connection_id = 0  # You can set the connection ID as needed
             sock.sendto(syn_packet.pack(), (args.host, args.port))
+            print("Sent SYN packet")
 
             # Receive SYN-ACK response
             syn_ack_packet, server_address = sock.recvfrom(424)  # Adjust the buffer size as per your needs
@@ -39,6 +40,7 @@ def start():
                 ack_packet.header.ack = 1
                 ack_packet.header.connection_id = connection_id
                 sock.sendto(ack_packet.pack(), (args.host, args.port))
+                print("Sent ACK packet")
 
                 # Now, you can start sending data
                 with open(args.file, "rb") as f:
@@ -61,6 +63,7 @@ def start():
                 fin_packet.header.fin = 1
                 fin_packet.header.connection_id = connection_id
                 sock.sendto(fin_packet.pack(), (args.host, args.port))
+                print("Sent FIN packet")
 
                 # Receive ACK for the FIN
                 ack_packet, _ = sock.recvfrom(424)  # Adjust the buffer size as needed
